@@ -5,36 +5,35 @@ import { API_URL } from "../utils/utils";
 
 import Link from "next/link";
 
-const useOrder = (session_id) => {
+const useOrder = async (session_id) => {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(null);
 
-  const { getToken, user } = useContext(AuthContext);
-
   useEffect(() => {
-    if (user) {
-      const fetchOrder = async () => {
-        setLoading(true);
-        try {
-          const token = await getToken();
-          const res = await fetch(`${API_URL}/orders/confirm`, {
-            method: "POST",
-            body: JSON.stringify({ checkout_session: session_id }),
-            headers: {
-              "Content-type": "application/json",
-            },
-          });
+    const fetchOrder = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(`${API_URL}/orders/confirm`, {
+          method: "POST",
+          body: JSON.stringify({
+            checkout_session: session_id,
+          }),
+          headers: {
+            "Content-type": "application/json",
+          },
+        });
 
-          const data = await res.json();
-          setOrder(data);
-        } catch (err) {
-          setOrder(null);
-        }
-        setLoading(false);
-      };
+        const data = await res.json();
+        setOrder(data);
+      } catch (err) {
+        setOrder(null);
+      }
+      setLoading(false);
+    };
+    if (session_id) {
       fetchOrder();
     }
-  }, [user]);
+  }, [session_id]);
 
   return { order, loading };
 };
@@ -42,8 +41,8 @@ const useOrder = (session_id) => {
 export default function Success() {
   const router = useRouter();
   const { session_id } = router.query;
+  console.log(session_id);
   const { order, loading } = useOrder(session_id);
-
   return (
     <div>
       <h2>Hold on!</h2>

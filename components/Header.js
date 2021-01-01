@@ -28,7 +28,7 @@ export default () => {
       <div className={styles.title}>
         <Link href="/">
           <a>
-            <h1>Classy Fashions</h1>
+            <h1>PB WEALTH LIBRARY</h1>
           </a>
         </Link>
       </div>
